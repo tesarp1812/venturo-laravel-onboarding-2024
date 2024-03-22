@@ -11,7 +11,7 @@ Sebelum menjalankan projek ini pastikan php yang digunakan minimal versi 8.2.
 Berikut tahap untuk setup projek :
 - Clone this repository
 ```
-  git clone https://gitlab.com/venturo-web/venturo-laravel-skeleton.git
+  git clone https://gitlab.com/venturo-web/venturo-laravel-onboarding-2024.git
 ```
 - Masuk ke direktori projek
 ```
