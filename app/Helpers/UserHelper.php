@@ -136,7 +136,7 @@ class UserHelper extends Venturo
                 unset($payload['password']);
             }
 
-            $payload = $this->uploadGetPayload($payload);
+            // $payload = $this->uploadGetPayload($payload);
             $this->userModel->edit($payload, $id);
 
             $user = $this->getById($id);

@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Uuid;
+use App\Repository\CrudInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Polyfill\Uuid\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserModel extends Model
+class UserModel extends Model implements CrudInterface
 {
     use HasFactory;
     use Uuid;
@@ -21,9 +22,9 @@ class UserModel extends Model
         'phone_number',
     ];
     public $timestamp = true;
-    protected $attributes = [
-        'user_roles_id' => 1, // memberi nilai default = 1 pada kolom user_roles_id
-    ];
+    // protected $attributes = [
+    //     'user_roles_id' => 1, // memberi nilai default = 1 pada kolom user_roles_id
+    // ];
 
     public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
     {
