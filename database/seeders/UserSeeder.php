@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
         // Input data default untuk tabel m_user
         DB::table('m_user')->insert([
             'id' => "270aa220-e53a-4258-954a-0a45973dceed",
+            'user_roles_id' => 1,
             'name' => 'Admin',
             'email' => 'admin@landa.co.id',
             'password' => Hash::make('devGanteng'),

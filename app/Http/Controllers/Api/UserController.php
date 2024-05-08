@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Helpers\UserHelper;
 use App\Http\Requests\User\CreateRequest;
 use App\Http\Requests\User\UpdateRequest;
+use App\Http\Resources\User\UserCollections;
+use App\Http\Resources\User\UserResource;
 
 class UserController extends Controller
 {
@@ -30,7 +32,8 @@ class UserController extends Controller
         ];
         $users = $this->user->getAll($filter, 5, $request->sort ?? '');
 
-        return response()->success($users['data']);
+        return response()->success(new UserCollections($users['data']));
+
     }
 
     /**
@@ -50,13 +53,14 @@ class UserController extends Controller
             }
 
             $payload = $request->only(['email', 'name', 'password', 'photo']);
-            $user = $this->user->create($payload);
+            $users = $this->user->create($payload);
 
-            if (!$user['status']) {
-                return response()->failed($user['error']);
+            if (!$users['status']) {
+                return response()->failed($users['error']);
             }
 
-            return response()->success($user['data']);
+            return response()->success(new UserResource($users));
+
         }
     }
 
@@ -67,13 +71,14 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = $this->user->getById($id);
+        $users = $this->user->getById($id);
 
-        if (!($user['status'])) {
+        if (!($users['status'])) {
             return response()->failed(['Data user tidak ditemukan'], 404);
         }
 
-        return response()->success($user['data']);
+        return response()->success(new UserResource($users));
+
     }
 
     /**
@@ -92,13 +97,14 @@ class UserController extends Controller
         }
 
         $payload = $request->only(['email', 'name', 'password', 'id', 'photo']);
-        $user = $this->user->update($payload, $payload['id']);
+        $users = $this->user->update($payload, $payload['id']);
 
-        if (!$user['status']) {
-            return response()->failed($user['error']);
+        if (!$users['status']) {
+            return response()->failed($users['error']);
         }
 
-        return response()->success($user['data']);
+        return response()->success(new UserResource($users));
+
     }
 
     /**
@@ -110,12 +116,12 @@ class UserController extends Controller
 
     public function destroy($id)
     {
-        $user = $this->user->delete($id);
+        $users = $this->user->delete($id);
 
-        if (!$user) {
+        if (!$users) {
             return response()->failed(['Mohon maaf data pengguna tidak ditemukan']);
         }
 
-        return response()->success($user);
+        return response()->success($users);
     }
 }

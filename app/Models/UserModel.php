@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Polyfill\Uuid\Uuid;
+use App\Http\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Repository\CrudInterface;
 
-class UserModel extends Model
+class UserModel extends Model implements CrudInterface 
 {
     use HasFactory;
     use Uuid;

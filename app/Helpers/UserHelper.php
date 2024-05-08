@@ -5,9 +5,11 @@ namespace App\Helpers;
 use App\Models\UserModel;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Event\Code\Throwable;
+use App\Http\Traits\Uuid;
 
 class UserHelper extends Venturo
 {
+    use Uuid;
     const USER_PHOTO_DIRECTORY = 'foto-user';
     private $userModel;
     public function __construct()
