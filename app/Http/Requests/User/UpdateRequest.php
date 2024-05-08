@@ -3,9 +3,13 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class UpdateRequest extends FormRequest
 {
+
+    protected $redirect = '/dashboard';
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -29,4 +33,5 @@ class UpdateRequest extends FormRequest
             'password' => 'required|min:6',
         ];
     }
+
 }

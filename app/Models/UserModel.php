@@ -6,9 +6,11 @@ use App\Http\Traits\Uuid;
 use App\Repository\CrudInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Http\Traits\Uuid;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Repository\CrudInterface;
 
-class UserModel extends Model implements CrudInterface
+class UserModel extends Model implements CrudInterface 
 {
     use HasFactory;
     use Uuid;

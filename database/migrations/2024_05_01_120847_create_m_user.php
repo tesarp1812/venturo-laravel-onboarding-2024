@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('m_user', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('user_roles_id', 100)->comment('Fill with id from table user_roles');
             $table->string('name', 100)
                     ->comment('Fill with name of user');
             $table->string('email', 50)
@@ -35,7 +36,7 @@ return new class extends Migration
             $table->uuid('updated_by')->nullable();
             $table->uuid('deleted_by')->nullable();
  
- 
+            $table->index('user_roles_id');
             $table->index('email');
             $table->index('name');
             $table->index('updated_security');
