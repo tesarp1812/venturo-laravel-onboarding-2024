@@ -4,45 +4,38 @@ namespace App\Models;
 
 use App\Http\Traits\Uuid;
 use App\Repository\CrudInterface;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class UserModel extends Model implements CrudInterface 
+class UserRoleModel extends Model implements CrudInterface 
 {
     use HasFactory;
     use Uuid;
     use SoftDeletes; // Use SoftDeletes library
-    protected $table = "m_user";
+    protected $table = "m_user_roles";
     protected $fillable = [
         'name',
-        'email',
-        'password',
-        'photo',
-        'phone_number',
+        'access'
     ];
     public $timestamp = true;
-    protected $attributes = [
-        'user_roles_id' => 1, // memberi nilai default = 1 pada kolom user_roles_id
-    ];
 
     public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
     {
-        $user = $this->query();
+        $query = $this->query();
 
         if (!empty($filter['name'])) {
-            $user->where('name', 'LIKE', '%' . $filter['name'] . '%');
-        }
-
-        if (!empty($filter['email'])) {
-            $user->where('email', 'LIKE', '%' . $filter['email'] . '%');
+            $query->where('name', 'LIKE', '%' . $filter['name'] . '%');
         }
 
         $sort = $sort ?: 'id DESC';
-        $user->orderByRaw($sort);
-        $itemPerPage = ($itemPerPage > 0) ? $itemPerPage : false;
+        $query->orderByRaw($sort);
 
-        return $user->paginate($itemPerPage)->appends('sort', $sort);
+        if ($itemPerPage > 0) {
+            return $query->paginate($itemPerPage)->appends('sort', $sort);
+        } else {
+            return $query->get();
+        }
     }
 
     public function getById(string $id)

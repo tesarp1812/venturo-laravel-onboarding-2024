@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SiteController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\api\UserRoleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +25,14 @@ Route::prefix('v1')->group(function () {
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
+ });
+
+ Route::prefix('v1')->group(function () {
+    Route::get('/roles', [UserRoleController::class, 'index']);
+    Route::get('/roles/{id}', [UserRoleController::class, 'show']);
+    Route::post('/roles', [UserRoleController::class, 'store']);
+    Route::put('/roles', [UserRoleController::class, 'update']);
+    Route::get('/roles/{id}', [UserRoleController::class, 'destroy']);
  });
  
  
