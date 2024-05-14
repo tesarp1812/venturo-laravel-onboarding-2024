@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use App\Models\UserRoleModel;
 use Illuminate\Http\Request;
+use App\Http\Requests\Role\CreateRequest;
 
 class UserRoleController extends Controller
 {
@@ -36,22 +37,25 @@ class UserRoleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateRequest $request)
     {
-        // Validasi input dari request
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'access' => 'required|string|max:255',
-        ]);
+        /**
+             * Menampilkan pesan error ketika validasi gagal
+             * pengaturan validasi bisa dilihat pada class app/Http/request/role/CreateRequest
+             */
+            if (isset($request->validator) && $request->validator->fails()) {
+                return response()->failed($request->validator->errors());
+            }
 
-        // Membuat role baru berdasarkan input dari request
-        $role = $this->role->create([
-            'name' => $validatedData['name'],
-            'access' => $validatedData['access'],
-        ]);
+            $payload = $request->only(['name', 'access']);
+            $role = $this->role->create($payload);
 
-        // Mengembalikan respons dengan data role yang baru dibuat
-        return response()->json(['status' => true, 'data' => $role], 201);
+            if (!$role['status']) {
+                return response()->failed($role['error']);
+            }
+            
+
+            return response()->success($role['data']);
     }
 
     /**
