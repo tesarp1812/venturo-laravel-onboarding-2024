@@ -36,12 +36,15 @@ class UserController extends Controller
 
     /**
      * Membuat data user baru & disimpan ke tabel m_user
-     *
+     *phpph
      * @author Wahyu Agung <wahyuagung26@email.com>
      */
 
     public function store(CreateRequest $request)
     { {
+        // dd($request->all());
+
+        
             /**
              * Menampilkan pesan error ketika validasi gagal
              * pengaturan validasi bisa dilihat pada class app/Http/request/User/CreateRequest

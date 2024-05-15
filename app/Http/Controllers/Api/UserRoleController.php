@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\UserRoleModel;
 use Illuminate\Http\Request;
 use App\Http\Requests\Role\CreateRequest;
+use App\Helpers\UserRoleHelper;
+use App\Http\Requests\Role\UpdateRequest;
+use PHPOpenSourceSaver\JWTAuth\Payload;
 
 class UserRoleController extends Controller
 {
@@ -13,7 +16,7 @@ class UserRoleController extends Controller
     private $role;
     public function __construct()
     {
-        $this->role = new UserRoleModel();
+        $this->role = new UserRoleHelper();
     }
 
 
@@ -22,16 +25,12 @@ class UserRoleController extends Controller
      */
     public function index(Request $request)
     {
-        // Mendapatkan input dari request
         $filter = [
-            'name' => $request->input('name') // asumsi filter berdasarkan nama
+            'name' => $request->nama ?? ''
         ];
+        $role = $this->role->getAll($filter, 5, $request->sort ?? '');
 
-        // Mengambil data roles berdasarkan filter
-        $role = $this->role->getAll($filter);
-
-        // Mengembalikan respons dengan data roles
-        return response()->json(['status' => true, 'data' => $role], 200);
+        return response()->success($role);
     }
 
     /**
@@ -39,23 +38,27 @@ class UserRoleController extends Controller
      */
     public function store(CreateRequest $request)
     {
+        //dd($request->all());
+
         /**
-             * Menampilkan pesan error ketika validasi gagal
-             * pengaturan validasi bisa dilihat pada class app/Http/request/role/CreateRequest
-             */
-            if (isset($request->validator) && $request->validator->fails()) {
-                return response()->failed($request->validator->errors());
-            }
+         * Menampilkan pesan error ketika validasi gagal
+         * pengaturan validasi bisa dilihat pada class app/Http/request/role/CreateRequest
+         */
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->failed($request->validator->errors());
+        }
 
-            $payload = $request->only(['name', 'access']);
-            $role = $this->role->create($payload);
 
-            if (!$role['status']) {
-                return response()->failed($role['error']);
-            }
-            
+        $payload = $request->only(['name', 'access']);
 
-            return response()->success($role['data']);
+        $role = $this->role->create($payload);
+        
+        if (!$role['status']) {
+            return response()->failed($role['error']);
+        }
+
+
+        return response()->success($role['data']);
     }
 
     /**

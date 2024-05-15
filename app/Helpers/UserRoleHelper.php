@@ -2,18 +2,18 @@
 
 namespace App\Helpers;
 
-use App\Models\UserModel;
+use App\Models\UserRoleModel;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Event\Code\Throwable;
 use App\Http\Traits\Uuid;
 
-class UserHelper extends Venturo
+class UserRoleHelper extends Venturo
 {
     use Uuid;
     private $roleModel;
     public function __construct()
     {
-        $this->roleModel = new UserModel();
+        $this->roleModel = new UserRoleModel();
     }
 
     /**
@@ -62,51 +62,26 @@ class UserHelper extends Venturo
         ];
     }
 
-    /**
-     * Upload file and remove payload when photo is not exist
-     *
-     * @author Wahyu Agung <wahyuagung26@email.com>
-     *
-     * @param array $payload
-     * @return array
-     */
-    private function uploadGetPayload(array $payload)
-    {
-        if (!empty($payload['photo'])) {
-            $fileName = $this->generateFileName($payload['photo'], 'USER_' . date('Ymdhis'));
-            $photo = $payload['photo']->storeAs(self::USER_PHOTO_DIRECTORY, $fileName, 'public');
-            $payload['photo'] = $photo;
-        } else {
-            unset($payload['photo']);
-        }
-
-        return $payload;
-    }
-
+    
     /**
      * method untuk menginput data baru ke tabel m_user
      *
      * @author Wahyu Agung <wahyuagung26@email.com>
      *
      * @param array $payload
-     *              $payload['nama'] = string
-     *              $payload['email] = string
-     *              $payload['password] = string
+     *              $payload['name'] = string
+     *              $payload['access] = string
      *
      * @return array
      */
     public function create(array $payload): array
     {
         try {
-            $payload['password'] = Hash::make($payload['password']);
-
-
-            $payload = $this->uploadGetPayload($payload);
-            $user = $this->userModel->store($payload);
+            $role = $this->roleModel->store($payload);
 
             return [
                 'status' => true,
-                'data' => $user
+                'data' => $role
             ];
         } catch (\Throwable $th) {
             return [

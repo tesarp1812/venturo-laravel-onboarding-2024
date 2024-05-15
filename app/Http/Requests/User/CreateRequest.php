@@ -86,7 +86,7 @@ class CreateRequest extends FormRequest
 
         return response()->success(
             //new UserResource(
-                new CreateRequest(
+                new UserResource(
                     $user['data']
                 ),
             'Data user berhasil disimpan'

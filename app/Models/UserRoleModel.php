@@ -20,6 +20,7 @@ class UserRoleModel extends Model implements CrudInterface
     ];
     public $timestamp = true;
 
+
     public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
     {
         $query = $this->query();

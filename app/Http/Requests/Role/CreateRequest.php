@@ -4,7 +4,7 @@ namespace App\Http\Requests\Role;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator; // Add Validator class import
-use App\Http\Requests\User\RoleResource;
+use App\Http\Resources\UserRole\UserRoleResource;
 
 class CreateRequest extends FormRequest
 {
@@ -25,7 +25,7 @@ class CreateRequest extends FormRequest
     {
         return [
             'name' => 'required|max:100',
-            'access' => 'required|max:255',
+            'access' => 'required|max:100',
         ];
     }
 
@@ -44,24 +44,23 @@ class CreateRequest extends FormRequest
     }
 
     public function store(CreateRequest $request)
-    {
-        if (isset($request->validator) && $request->validator->fails()) {
-            return response()->failed($request->validator->errors());
-        }
+   {
+       if (isset($request->validator) && $request->validator->fails()) {
+           return response()->failed($request->validator->errors());
+       }
 
-        $payload = $request->only(['name', 'access']);
-        $role = $this->role->create($payload);
-
-        if (!$role['status']) {
-            return response()->failed($role['error']);
-        }
+       $payload = $request->only(['name', 'access']);
+       $role = $this->role->create($payload);
+      
+       if (!$role['status']) {
+           return response()->failed($role['error']);
+       }
 
         return response()->success(
-            //new roleResource(
-            new CreateRequest(
-                $role['data']
-            ),
-            'Data role berhasil disimpan'
-        );
+            new UserRoleResource(
+                     $role['data']), 
+                     'Data Role berhasil disimpan'
+                );
+
     }
 }
