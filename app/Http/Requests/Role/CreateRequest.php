@@ -28,4 +28,40 @@ class CreateRequest extends FormRequest
             'access' => 'required|max:255',
         ];
     }
+
+    // failed validator
+    public $validator = null;
+
+    /**
+     * Simpan pesan error ketika validasi gagal
+     *
+     * @return void
+     */
+
+    public function failedValidation(Validator $validator)
+    {
+        $this->validator = $validator;
+    }
+
+    public function store(CreateRequest $request)
+    {
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->failed($request->validator->errors());
+        }
+
+        $payload = $request->only(['name', 'access']);
+        $role = $this->role->create($payload);
+
+        if (!$role['status']) {
+            return response()->failed($role['error']);
+        }
+
+        return response()->success(
+            //new roleResource(
+            new CreateRequest(
+                $role['data']
+            ),
+            'Data role berhasil disimpan'
+        );
+    }
 }

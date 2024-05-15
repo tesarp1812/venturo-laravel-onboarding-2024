@@ -13,7 +13,7 @@ class UserHelper extends Venturo
     private $roleModel;
     public function __construct()
     {
-        $this->userModel = new UserModel();
+        $this->roleModel = new UserModel();
     }
 
     /**
