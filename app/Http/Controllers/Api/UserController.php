@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Helpers\UserHelper;
 use App\Http\Requests\User\CreateRequest;
 use App\Http\Requests\User\UpdateRequest;
+use App\Http\Resources\User\UserCollections;
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\UploadedFile;
 
 class UserController extends Controller
@@ -31,7 +33,7 @@ class UserController extends Controller
         ];
         $users = $this->user->getAll($filter, 5, $request->sort ?? '');
 
-        return response()->success($users['data']);
+        return response()->success(new UserCollections($users['data']));
     }
 
     /**
@@ -42,9 +44,9 @@ class UserController extends Controller
 
     public function store(CreateRequest $request)
     { {
-        // dd($request->all());
+            // dd($request->all());
 
-        
+
             /**
              * Menampilkan pesan error ketika validasi gagal
              * pengaturan validasi bisa dilihat pada class app/Http/request/User/CreateRequest
@@ -59,9 +61,9 @@ class UserController extends Controller
             if (!$user['status']) {
                 return response()->failed($user['error']);
             }
-            
 
-            return response()->success($user['data']);
+
+        return response()->success(new UserResource($user['data']));
         }
     }
 
@@ -78,8 +80,9 @@ class UserController extends Controller
             return response()->failed(['Data user tidak ditemukan'], 404);
         }
 
-        return response()->success($user['data']);
+        return response()->success(new UserResource($user['data']));
     }
+
 
     /**
      * Mengubah data user di tabel m_user
@@ -116,7 +119,7 @@ class UserController extends Controller
             return response()->failed($user['error']);
         }
 
-        return response()->success($user['data']);
+        return response()->success(new UserResource($user['data']));
     }
 
     /**
@@ -137,5 +140,3 @@ class UserController extends Controller
         return response()->success($user);
     }
 }
-
-

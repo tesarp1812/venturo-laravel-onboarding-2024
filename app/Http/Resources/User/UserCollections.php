@@ -12,8 +12,15 @@ class UserCollections extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public function toArray(Request $request): array
+
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'list' => $this->collection, // otomatis mengikuti format UserResource
+            'meta' => [
+                'links' => $this->getUrlRange(1, $this->lastPage()),
+                'total' => $this->total()
+            ]
+        ];
     }
 }
