@@ -17,13 +17,12 @@ class UserRoleHelper extends Venturo
     }
 
     /**
-     * Mengambil data user dari tabel m_user
+     * Mengambil data user dari tabel m_role_user
      *
      * @author Wahyu Agung <wahyuagung26@gmail.com>
      *
      * @param  array $filter
-     * $filter['nama'] = string
-     * $filter['email'] = string
+     * $filter['name'] = string
      * @param integer $itemPerPage jumlah data yang ditampilkan, kosongi jika ingin menampilkan semua data
      * @param string $sort nama kolom untuk melakukan sorting mysql beserta tipenya DESC / ASC
      *
@@ -31,7 +30,7 @@ class UserRoleHelper extends Venturo
      */
     public function getAll(array $filter, int $itemPerPage = 0, string $sort = ''): array
     {
-        $users = $this->userModel->getAll($filter, $itemPerPage, $sort);
+        $users = $this->roleModel->getAll($filter, $itemPerPage, $sort);
 
         return [
             'status' => true,
@@ -48,7 +47,7 @@ class UserRoleHelper extends Venturo
      */
     public function getById(string $id): array
     {
-        $user = $this->userModel->getById($id);
+        $user = $this->roleModel->getById($id);
         if (empty($user)) {
             return [
                 'status' => false,
@@ -62,7 +61,7 @@ class UserRoleHelper extends Venturo
         ];
     }
 
-    
+
     /**
      * method untuk menginput data baru ke tabel m_user
      *
@@ -106,19 +105,12 @@ class UserRoleHelper extends Venturo
     public function update(array $payload, string $id): array
     {
         try {
-            if (isset($payload['password']) && !empty($payload['password'])) {
-                $payload['password'] = Hash::make($payload['password']) ?: '';
-            } else {
-                unset($payload['password']);
-            }
+            $this->roleModel->edit($payload, $id);
 
-            // $payload = $this->uploadGetPayload($payload);
-            $this->userModel->edit($payload, $id);
-
-            $user = $this->getById($id);
+            $role = $this->getById($id);
             return [
                 'status' => true,
-                'data' => $user['data']
+                'data' => $role['data']
             ];
         } catch (\Throwable $th) {
             return [
@@ -141,7 +133,7 @@ class UserRoleHelper extends Venturo
     public function delete(string $id): bool
     {
         try {
-            $this->userModel->drop($id);
+            $this->roleModel->drop($id);
             return true;
         } catch (\Throwable $th) {
             return false;

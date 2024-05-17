@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Http\Traits\Uuid;
 use App\Repository\CrudInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Http\Traits\Uuid;
 
 class UserModel extends Model implements CrudInterface 
 {

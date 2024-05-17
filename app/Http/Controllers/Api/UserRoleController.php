@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Role\CreateRequest;
 use App\Helpers\UserRoleHelper;
 use App\Http\Requests\Role\UpdateRequest;
+use App\Http\Resources\UserRole\UserRoleCollections;
+use App\Http\Resources\UserRole\UserRoleResource;
 use PHPOpenSourceSaver\JWTAuth\Payload;
 
 class UserRoleController extends Controller
@@ -29,8 +31,8 @@ class UserRoleController extends Controller
             'name' => $request->nama ?? ''
         ];
         $role = $this->role->getAll($filter, 5, $request->sort ?? '');
-
-        return response()->success($role);
+        //dd($role['data']);
+        return response()->success(new UserRoleCollections($role['data']));
     }
 
     /**
@@ -52,13 +54,13 @@ class UserRoleController extends Controller
         $payload = $request->only(['name', 'access']);
 
         $role = $this->role->create($payload);
-        
+
         if (!$role['status']) {
             return response()->failed($role['error']);
         }
 
 
-        return response()->success($role['data']);
+        return response()->success(new UserRoleResource($role['data']));
     }
 
     /**
@@ -66,44 +68,37 @@ class UserRoleController extends Controller
      */
     public function show($id)
     {
-        // Mengambil data role berdasarkan ID
-        $role = $this->role->find($id);
+        $role = $this->role->getById($id);
 
-        // Memeriksa apakah data ditemukan
-        if (!$role) {
-            return response()->json(['status' => false, 'message' => 'Role not found'], 404);
+        if (!($role['status'])) {
+            return response()->failed(['Data role tidak ditemukan'], 404);
         }
 
-        // Mengembalikan respons dengan data role
-        return response()->json(['status' => true, 'data' => $role], 200);
+        return response()->success(new UserRoleResource($role['data']));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(UpdateRequest $request)
     {
-        // Mencari role berdasarkan ID
-        $role = UserRoleModel::find($id);
+        /**
+         * Menampilkan pesan error ketika validasi gagal
+         * pengaturan validasi bisa dilihat pada class app/Http/request/role/UpdateRequest
+         */
+        if (isset($request->validator) && $request->validator->fails()) {
+            return response()->failed($request->validator->errors());
+        }
+        
+        $payload = $request->only(['name', 'access','id']);
+        $role = $this->role->update($payload, $payload['id']);
+        //dd($role);
 
-        // Memeriksa apakah data ditemukan
-        if (!$role) {
-            return response()->json(['status' => false, 'message' => 'Role not found'], 404);
+        if (!$role['status']) {
+            return response()->failed($role['error']);
         }
 
-        // Validasi input dari request
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'access' => 'required|string|max:255',
-        ]);
-
-        // Mengupdate role berdasarkan input dari request
-        $role->name = $validatedData['name'];
-        $role->access = $validatedData['access'];
-        $role->save();
-
-        // Mengembalikan respons dengan data role yang telah diupdate
-        return response()->json(['status' => true, 'data' => $role], 200);
+        return response()->success(new UserRoleResource($role['data']));
     }
 
 

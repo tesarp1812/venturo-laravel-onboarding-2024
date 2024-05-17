@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\SiteController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\api\UserRoleController;
+use App\Http\Controllers\Api\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,10 +33,16 @@ Route::prefix('v1')->group(function () {
     Route::get('/roles/{id}', [UserRoleController::class, 'show']);
     Route::post('/roles', [UserRoleController::class, 'store']);
     Route::put('/roles', [UserRoleController::class, 'update']);
-    Route::get('/roles/{id}', [UserRoleController::class, 'destroy']);
+    Route::delete('/roles/{id}', [UserRoleController::class, 'destroy']);
  });
  
- 
+ Route::prefix('v1')->group(function () {
+    Route::get('/customers', [CustomerController::class, 'index']);
+    Route::get('/customers/{id}', [CustomerController::class, 'show']);
+    Route::post('/customers', [CustomerController::class, 'store']);
+    Route::put('/customers', [CustomerController::class, 'update']);
+    Route::delete('/customers/{id}', [CustomerController::class, 'destroy']);
+ });
 
 Route::get('/', function () {
     return response()->failed(['Endpoint yang anda minta tidak tersedia']);
