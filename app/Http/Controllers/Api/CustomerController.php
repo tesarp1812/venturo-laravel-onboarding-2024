@@ -6,6 +6,8 @@ use App\Helpers\Customer\CustomerHelper;
 use App\Helpers\UserHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CustomerCreateRequest;
+use App\Http\Resources\Customer\CustomerCollection;
+use App\Http\Resources\Customer\CustomerResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -26,14 +28,13 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        // dd();
         $filter = [
             'name' => $request->name ?? '',
         ];
         $customers = $this->customer->getAll($filter, 5, $request->sort ?? '');
 
-
-        return response()->success($customers['data']);
-        // return response()->success(new CustomerCollection($customers['data']));
+        return response()->success(new CustomerCollection($customers['data']));
     }
 
     /**
@@ -63,6 +64,7 @@ class CustomerController extends Controller
 
 
             DB::commit();
+            // return response()->success($customer['data'], "Customer berhasil ditambahkan");
             return response()->success(new CustomerResource($customer['data']), "Customer berhasil ditambahkan");
         } catch (\Throwable $th) {
             DB::rollback();

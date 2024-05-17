@@ -6,6 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator; // Add Validator class import
 use ConvertsBase64ToFiles;
 use App\Http\Requests\User\UserResource;
+use App\Http\Resources\User\UserResource as UserUserResource;
 
 class CreateRequest extends FormRequest
 {
@@ -86,7 +87,7 @@ class CreateRequest extends FormRequest
 
         return response()->success(
             //new UserResource(
-                new UserResource(
+                new UserUserResource(
                     $user['data']
                 ),
             'Data user berhasil disimpan'

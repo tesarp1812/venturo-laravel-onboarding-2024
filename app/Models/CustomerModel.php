@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Http\Traits\Uuid;
 
-class CustomerModel extends Model
+class CustomerModel extends Model implements CrudInterface
 {
     use HasFactory;
     use Uuid;
