@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Product\ProductHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Helpers\ProductHelper;
 use App\Http\Resources\Product\ProductCollection;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Requests\Product\ProductRequest;
