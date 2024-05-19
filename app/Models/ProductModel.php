@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Uuid;
 use App\Repository\CrudInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ProductModel extends Model implements CrudInterface
 {
     use HasFactory;
+    use Uuid;
     use SoftDeletes; // Use SoftDeletes library
     public $timestamps = true;
     protected $fillable = [

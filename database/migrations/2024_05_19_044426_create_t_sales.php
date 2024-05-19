@@ -11,17 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_product_category', function (Blueprint $table) {
+        Schema::create('t_sales', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('name', 150)
-                ->comment('Fill with name of product category');
+            $table->bigInteger('m_customer_id')
+                ->comment('Fill with id from table m_customer');
+            $table->date('date');
             $table->timestamps();
             $table->softDeletes();
             $table->integer('created_by')->default(0);
             $table->integer('updated_by')->default(0);
             $table->integer('deleted_by')->default(0);
 
-            $table->index('name');
+            $table->index('m_customer_id');
         });
     }
 
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_product_category');
+        Schema::dropIfExists('t_sales');
     }
 };

@@ -11,16 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('m_product_detail', function (Blueprint $table) {
+        Schema::create('t_sales_detail', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->bigInteger('m_product_id')
                 ->comment('Fill with id from table m_product');
-            $table->enum('type', ['Level', 'Toping'])
-                ->comment('Fill with type of detail product');
-            $table->string('description', 255)
-                ->comment('Fill with description of detail product, ex : Topping Telur');
-            $table->double('price')->default(0)
-                ->comment('Fill price of product details');
+            $table->bigInteger('m_product_detail_id')
+                ->comment('Fill with id from table m_product_detail');
+            $table->integer('total_item')
+                ->comment('Fill total_item of sales detail');
+            $table->double('price')
+                ->comment('Fill price of sales detail');
+            $table->date('date');
             $table->timestamps();
             $table->softDeletes();
             $table->integer('created_by')->default(0);
@@ -28,6 +29,7 @@ return new class extends Migration
             $table->integer('deleted_by')->default(0);
 
             $table->index('m_product_id');
+            $table->index('m_product_detail_id');
         });
     }
 
@@ -36,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('m_product_detail');
+        Schema::dropIfExists('t_sales_detail');
     }
 };

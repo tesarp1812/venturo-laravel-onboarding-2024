@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Helpers\ProductCategoryHelper;
+use App\Helpers\Product\ProductCategoryHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\CategoryRequest;
 use App\Http\Resources\Product\CategoryCollection;
@@ -15,7 +15,7 @@ class ProductCategoryController extends Controller
     private $category;
     public function __construct()
     {
-        $this->category = new ProductCategoryHelper();
+        $this->category = new ProductCategoryHelper;
     }
 
 

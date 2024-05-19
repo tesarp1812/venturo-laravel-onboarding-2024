@@ -11,6 +11,7 @@ use App\Models\ProductModel;
 
 class ProductHelper extends Venturo
 {
+    use Uuid;
     const PRODUCT_PHOTO_DIRECTORY = 'foto-produk';
     private $product;
     private $productDetail;

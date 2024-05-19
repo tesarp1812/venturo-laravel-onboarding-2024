@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Helpers;
+namespace App\Helpers\Product;
 
+use App\Helpers\Venturo;
 use Illuminate\Support\Facades\Hash;
 use PHPUnit\Event\Code\Throwable;
 use App\Http\Traits\Uuid;
