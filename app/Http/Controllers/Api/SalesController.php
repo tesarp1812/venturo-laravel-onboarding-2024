@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Helpers\Sales\SalesHelper;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Sales\SalesCollection;
 use Illuminate\Http\Request;
 
 class SalesController extends Controller
@@ -25,7 +26,7 @@ class SalesController extends Controller
         ];
         $sales = $this->sales->getAll($filter, $request->per_page ?? 25, $request->sort ?? '');
         //dd($sales);
-        return response()->success($sales['data']);
+        return response()->success(new SalesCollection($sales['data']));
     }
 
     /**

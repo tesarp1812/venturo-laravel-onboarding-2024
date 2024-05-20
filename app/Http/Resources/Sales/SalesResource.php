@@ -5,7 +5,7 @@ namespace App\Http\Resources\Sales;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SalesDetailResource extends JsonResource
+class SalesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,10 +17,8 @@ class SalesDetailResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'total_item' => $this->totalItem,
-            'price' => $this->Price,
+            'date' => $this->date,
+            'details' => SalesDetailResource::collection($this->details)
         ];
     }
 }
-
-// Error: Call to a member function first() on null in file /Users/mac/Documents/coding/venturo-laravel-onboarding-2024/vendor/laravel/framework/src/Illuminate/Http/Resources/CollectsResources.php on line 34
