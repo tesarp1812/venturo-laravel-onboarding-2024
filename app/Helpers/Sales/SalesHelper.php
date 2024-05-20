@@ -1,57 +1,42 @@
 <?php
 
-namespace App\Helpers\Product;
+namespace App\Helpers\Sales;
 
 use App\Helpers\Venturo;
-use Illuminate\Support\Facades\Hash;
-use PHPUnit\Event\Code\Throwable;
 use App\Http\Traits\Uuid;
-use App\Models\ProductDetailModel;
-use App\Models\ProductModel;
+use App\Models\SalesDetailModel;
+use App\Models\SalesModel;
+use Carbon\Carbon;
 
-class ProductHelper extends Venturo
+class SalesHelper extends Venturo
 {
     use Uuid;
-    const PRODUCT_PHOTO_DIRECTORY = 'foto-produk';
-    private $product;
-    private $productDetail;
+    private $sales;
+    private $salesDetail;
 
     public function __construct()
     {
-        $this->product = new ProductModel();
-        $this->productDetail = new ProductDetailModel();
-    }
-
-
-    private function uploadAndGetPayload(array $payload)
-    {
-        if (!empty($payload['photo'])) {
-            $fileName = $this->generateFileName($payload['photo'], 'PRODUCT_' . date('Ymdhis'));
-            $photo = $payload['photo']->storeAs(self::PRODUCT_PHOTO_DIRECTORY, $fileName, 'public');
-            $payload['photo'] = $photo;
-        } else {
-            unset($payload['photo']);
-        }
-
-        return $payload;
+        $this->sales = new SalesModel();
+        $this->salesDetail = new SalesDetailModel();
     }
 
     public function create(array $payload): array
     {
         try {
-            $payload = $this->uploadAndGetPayload($payload);
 
             $this->beginTransaction();
 
-            $product = $this->product->store($payload);
+            $salesDate = Carbon::now();
 
-            $this->insertUpdateDetail($payload['details'] ?? [], $product->id);
+            $sales = $this->sales->store(array_merge($payload, ['date' => $salesDate]));
+
+            $this->insertUpdateDetail($payload['details'] ?? [], $sales->id);
 
             $this->commitTransaction();
 
             return [
                 'status' => true,
-                'data' => $product
+                'data' => $sales
             ];
         } catch (\Throwable $th) {
             $this->rollbackTransaction();
@@ -63,21 +48,20 @@ class ProductHelper extends Venturo
         }
     }
 
-
-    public function delete(int $productId)
+    public function delete(int $salesId)
     {
         try {
             $this->beginTransaction();
 
-            $this->product->drop($productId);
+            $this->sales->drop($salesId);
 
-            $this->productDetail->dropByProductId($productId);
+            $this->salesDetail->dropBysalesId($salesId);
 
             $this->commitTransaction();
 
             return [
                 'status' => true,
-                'data' => $productId
+                'data' => $salesId
             ];
         } catch (\Throwable $th) {
             $this->rollbackTransaction();
@@ -91,19 +75,19 @@ class ProductHelper extends Venturo
 
     public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
     {
-        $categories = $this->product->getAll($filter, $itemPerPage, $sort);
+        $sales = $this->sales->getAll($filter, $itemPerPage, $sort);
 
         return [
             'status' => true,
-            'data' => $categories
+            'data' => $sales
         ];
     }
 
 
     public function getById(string $id): array
     {
-        $product = $this->product->getById($id);
-        if (empty($product)) {
+        $sales = $this->sales->getById($id);
+        if (empty($sales)) {
             return [
                 'status' => false,
                 'data' => null
@@ -112,28 +96,27 @@ class ProductHelper extends Venturo
 
         return [
             'status' => true,
-            'data' => $product
+            'data' => $sales
         ];
     }
 
     public function update(array $payload): array
     {
         try {
-            $payload = $this->uploadAndGetPayload($payload);
 
             $this->beginTransaction();
 
-            $this->product->edit($payload, $payload['id']);
+            $this->sales->edit($payload, $payload['id']);
 
             $this->insertUpdateDetail($payload['details'] ?? [], $payload['id']);
             $this->deleteDetail($payload['details_deleted'] ?? []);
 
-            $product = $this->getById($payload['id']);
+            $sales = $this->getById($payload['id']);
             $this->commitTransaction();
 
             return [
                 'status' => true,
-                'data' => $product['data']
+                'data' => $sales['data']
             ];
         } catch (\Throwable $th) {
             $this->rollbackTransaction();
@@ -154,7 +137,7 @@ class ProductHelper extends Venturo
 
 
         foreach ($details as $val) {
-            $this->productDetail->delete($val['id']);
+            $this->salesDetail->delete($val['id']);
         }
     }
 
@@ -167,13 +150,14 @@ class ProductHelper extends Venturo
         foreach ($details as $val) {
             // Insert
             if (isset($val['is_added']) && $val['is_added']) {
-                $val['m_product_id'] = $productId;
-                $this->productDetail->store($val);
+                $val['t_sales_id'] = $productId;
+                $val['date'] = Carbon::now(); 
+                $this->salesDetail->store($val);
             }
 
             // Update
             if (isset($val['is_updated']) && $val['is_updated']) {
-                $this->productDetail->edit($val, $val['id']);
+                $this->salesDetail->edit($val, $val['id']);
             }
         }
     }

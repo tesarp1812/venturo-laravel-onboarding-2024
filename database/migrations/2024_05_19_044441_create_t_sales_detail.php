@@ -13,21 +13,23 @@ return new class extends Migration
     {
         Schema::create('t_sales_detail', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->bigInteger('m_product_id')
+            $table->string('t_sales_id')
+                ->comment('Fill with id from table t_sales');
+            $table->string('m_product_id')
                 ->comment('Fill with id from table m_product');
-            $table->bigInteger('m_product_detail_id')
+            $table->string('m_product_detail_id')
                 ->comment('Fill with id from table m_product_detail');
             $table->integer('total_item')
                 ->comment('Fill total_item of sales detail');
             $table->double('price')
                 ->comment('Fill price of sales detail');
-            $table->date('date');
             $table->timestamps();
             $table->softDeletes();
             $table->integer('created_by')->default(0);
             $table->integer('updated_by')->default(0);
             $table->integer('deleted_by')->default(0);
 
+            $table->index('t_sales_id');
             $table->index('m_product_id');
             $table->index('m_product_detail_id');
         });

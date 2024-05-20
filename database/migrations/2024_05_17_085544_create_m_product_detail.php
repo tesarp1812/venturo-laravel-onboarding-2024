@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('m_product_detail', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->bigInteger('m_product_id')
+            $table->string('m_product_id')
                 ->comment('Fill with id from table m_product');
             $table->enum('type', ['Level', 'Toping'])
                 ->comment('Fill with type of detail product');

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('t_sales', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->bigInteger('m_customer_id')
+            $table->string('m_customer_id')
                 ->comment('Fill with id from table m_customer');
             $table->date('date');
             $table->timestamps();
