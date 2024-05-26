@@ -48,6 +48,11 @@ class SalesHelper extends Venturo
         }
     }
 
+    private function getCurrentDate()
+    {
+        return Carbon::now();
+    }
+
     public function delete(int $salesId)
     {
         try {
@@ -151,7 +156,7 @@ class SalesHelper extends Venturo
             // Insert
             if (isset($val['is_added']) && $val['is_added']) {
                 $val['t_sales_id'] = $productId;
-                $val['date'] = Carbon::now(); 
+                $val['date'] = Carbon::now();
                 $this->salesDetail->store($val);
             }
 

@@ -66,7 +66,7 @@ Route::prefix('v1')->group(function () {
 Route::prefix('v1')->group(function () {
     Route::get('/sales', [SalesController::class, 'index']);
     // Route::get('/sales/{id}', [SalesController::class, 'show']);
-    // Route::post('/sales', [SalesController::class, 'store']);
+    Route::post('/sales', [SalesController::class, 'store']);
     // Route::put('/sales', [SalesController::class, 'update']);
     // Route::delete('/sales/{id}', [SalesController::class, 'destroy']);
 });
