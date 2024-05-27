@@ -14,6 +14,10 @@ class SalesRequest extends FormRequest
         $this->validator = $validator;
     }
 
+    public function authorize()
+    {
+        return true;
+    }
 
     public function rules()
     {
@@ -49,6 +53,11 @@ class SalesRequest extends FormRequest
         return [
             'date' => 'Transaction date',
             'm_customer_id' => 'Customer ID',
+            'details' => 'Sale details',
+            'details.*.m_product_id' => 'Product ID',
+            'details.*.m_product_detail_id' => 'Product Detail ID',
+            'details.*.total_item' => 'Total Items',
+            'details.*.price' => 'Price',
         ];
     }
 }

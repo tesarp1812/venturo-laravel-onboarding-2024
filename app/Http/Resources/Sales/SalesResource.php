@@ -12,19 +12,13 @@ class SalesResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+
     public function toArray($request)
     {
-        $data = [
+        return [
             'id' => $this->id,
-            'm_customer_id' => $this->m_customer_id,
             'date' => $this->date,
+            'details' => SalesDetailResource::collection($this->details)
         ];
-    
-        // Memeriksa apakah details tidak null sebelum membuat collection
-        if ($this->details !== null) {
-            $data['details'] = SalesDetailResource::collection($this->details);
-        }
-    
-        return $data;
     }
 }

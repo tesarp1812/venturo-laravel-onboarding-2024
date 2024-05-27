@@ -18,6 +18,7 @@ class SalesController extends Controller
         $this->sales = new SalesHelper();
     }
 
+
     /**
      * Display a listing of the resource.
      */
@@ -28,12 +29,13 @@ class SalesController extends Controller
         ];
         $sales = $this->sales->getAll($filter, $request->per_page ?? 25, $request->sort ?? '');
         //dd($sales);
-        return response()->success($sales['data']);
+        return response()->success(new SalesCollection($sales['data']));
     }
 
     /**
      * Store a newly created resource in storage.
      */
+    public function store(SalesRequest $request)
     public function store(SalesRequest $request)
     {
         // dd($request->all());
