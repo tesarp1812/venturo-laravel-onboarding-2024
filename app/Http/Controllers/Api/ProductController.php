@@ -44,6 +44,7 @@ class ProductController extends Controller
 
     public function store(ProductRequest $request)
     {
+        // dd($request->all());
         if (isset($request->validator) && $request->validator->fails()) {
             return response()->failed($request->validator->errors());
         }
@@ -60,12 +61,13 @@ class ProductController extends Controller
 
         $payload['m_product_category_id'] = $payload['product_category_id'];
         $product = $this->product->create($payload);
+        // dd($payload);
 
         if (!$product['status']) {
             return response()->failed($product['error']);
         }
 
-        return response()->success(new ProductResource($product['data']), 'product berhasil ditambahkan');
+        return response()->success(($product['data']), 'product berhasil ditambahkan');
     }
 
 

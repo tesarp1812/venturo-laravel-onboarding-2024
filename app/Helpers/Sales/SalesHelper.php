@@ -26,9 +26,7 @@ class SalesHelper extends Venturo
 
             $this->beginTransaction();
 
-            $salesDate = Carbon::now();
-
-            $sales = $this->sales->store(array_merge($payload, ['date' => $salesDate]));
+            $sales = $this->sales->store($payload);
 
             $this->insertUpdateDetail($payload['details'] ?? [], $sales->id);
 

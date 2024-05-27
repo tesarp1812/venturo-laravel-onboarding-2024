@@ -12,8 +12,15 @@ class SalesDetailResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            // 't_sales_id' =>$this->t_sales_id,
+            // 'm_product_id' =>$this->m_product_id,
+            // 'm_product_details_id' =>$this->m_product_details_id,
+            // 'total_item' => $this->total_item,
+            // 'price' => $this->price,
+        ];
     }
 }

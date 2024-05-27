@@ -29,7 +29,6 @@ class SalesRequest extends FormRequest
         return [
             'date' => 'required|date_format:Y-m-d',
             'm_customer_id' => 'required',
-            'details.*.t_sales_id' => 'required',
             'details.*.m_product_id' => 'required',
             'details.*.m_product_detail_id' => 'required',
             'details.*.total_item' => 'numeric',

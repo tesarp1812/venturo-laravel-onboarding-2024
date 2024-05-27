@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Helpers\Customer;
 
 
@@ -10,116 +11,116 @@ use Throwable;
 
 class CustomerHelper extends Venturo
 {
-   const CUSTOMER_PHOTO_DIRECTORY = 'foto-customer';
-   private $customerModel;
+    const CUSTOMER_PHOTO_DIRECTORY = 'foto-customer';
+    private $customerModel;
 
 
-   public function __construct()
-   {
-       $this->customerModel = new CustomerModel();
-   }
+    public function __construct()
+    {
+        $this->customerModel = new CustomerModel();
+    }
 
 
-   public function create(array $payload): array
-   {
-       try {
-           $payload = $this->uploadGetPayload($payload);
-           $customer = $this->customerModel->store($payload);
+    public function create(array $payload): array
+    {
+        try {
+            $payload = $this->uploadGetPayload($payload);
+            $customer = $this->customerModel->store($payload);
 
 
-           return [
-               'status' => true,
-               'data' => $customer
-           ];
-       } catch (Throwable $th) {
-           return [
-               'status' => false,
-               'error' => $th->getMessage()
-           ];
-       }
-   }
+            return [
+                'status' => true,
+                'data' => $customer
+            ];
+        } catch (Throwable $th) {
+            return [
+                'status' => false,
+                'error' => $th->getMessage()
+            ];
+        }
+    }
 
 
-   public function delete(string $id): bool
-   {
-       try {
-           $this->customerModel->drop($id);
+    public function delete(string $id): bool
+    {
+        try {
+            $this->customerModel->drop($id);
 
 
-           return true;
-       } catch (Throwable $th) {
-           return false;
-       }
-   }
+            return true;
+        } catch (Throwable $th) {
+            return false;
+        }
+    }
 
 
-   public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
-   {
-       $customers = $this->customerModel->getAll($filter, $itemPerPage, $sort);
+    public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
+    {
+        $customers = $this->customerModel->getAll($filter, $itemPerPage, $sort);
 
 
-       return [
-           'status' => true,
-           'data' => $customers
-       ];
-   }
+        return [
+            'status' => true,
+            'data' => $customers
+        ];
+    }
 
 
-   public function getById(string $id): array
-   {
-       $customer = $this->customerModel->getById($id);
-       if (empty($customer)) {
-           return [
-               'status' => false,
-               'data' => null
-           ];
-       }
+    public function getById(string $id): array
+    {
+        $customer = $this->customerModel->getById($id);
+        if (empty($customer)) {
+            return [
+                'status' => false,
+                'data' => null
+            ];
+        }
 
 
-       return [
-           'status' => true,
-           'data' => $customer
-       ];
-   }
+        return [
+            'status' => true,
+            'data' => $customer
+        ];
+    }
 
 
-   public function update(array $payload, string $id): array
-   {
-       try {
-           $payload = $this->uploadGetPayload($payload);
-           $this->customerModel->edit($payload, $id);
+    public function update(array $payload, string $id): array
+    {
+        try {
+            $payload = $this->uploadGetPayload($payload);
+            $this->customerModel->edit($payload, $id);
 
 
-           $customer = $this->getById($id);
+            $customer = $this->getById($id);
 
 
-           return [
-               'status' => true,
-               'data' => $customer['data']
-           ];
-       } catch (Throwable $th) {
-           return [
-               'status' => false,
-               'error' => $th->getMessage()
-           ];
-       }
-   }
+            return [
+                'status' => true,
+                'data' => $customer['data']
+            ];
+        } catch (Throwable $th) {
+            return [
+                'status' => false,
+                'error' => $th->getMessage()
+            ];
+        }
+    }
 
 
-   private function uploadGetPayload(array $payload)
-   {
-       /**
-        * Jika dalam payload terdapat base64 foto, maka Upload foto ke folder public/uploads/foto-customer
-        */
-       if (!empty($payload['photo'])) {
-           $fileName = $this->generateFileName($payload['photo'], 'CUSTOMER_' . date('Ymdhis'));
-           $photo = $payload['photo']->storeAs(self::CUSTOMER_PHOTO_DIRECTORY, $fileName, 'public');
-           $payload['photo'] = $photo;
-       } else {
-           unset($payload['photo']);
-       }
+    private function uploadGetPayload(array $payload)
+    {
+        /**
+         * Jika dalam payload terdapat base64 foto, maka Upload foto ke folder public/uploads/foto-customer
+         */
+        if (!empty($payload['photo'])) {
+            $fileName = $this->generateFileName($payload['photo'], 'CUSTOMER_' . date('Ymdhis'));
+            $photo = $payload['photo']->storeAs(self::CUSTOMER_PHOTO_DIRECTORY, $fileName, 'public');
+            $payload['photo'] = $photo;
+        } else {
+            unset($payload['photo']);
+        }
 
 
-       return $payload;
-   }
+        return $payload;
+    }
 }

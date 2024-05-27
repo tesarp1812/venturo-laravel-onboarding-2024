@@ -64,13 +64,13 @@ class CustomerController extends Controller
 
 
             DB::commit();
-            // return response()->success($customer['data'], "Customer berhasil ditambahkan");
             return response()->success(new CustomerResource($customer['data']), "Customer berhasil ditambahkan");
         } catch (\Throwable $th) {
             DB::rollback();
             return response()->failed($th);
         }
     }
+
 
 
     /**
