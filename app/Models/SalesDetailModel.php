@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Traits\Uuid;
 use App\Repository\CrudInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class SalesDetailModel extends Model implements CrudInterface
 {
     use HasFactory;
+    use Uuid;
     use SoftDeletes; // Use SoftDeletes library
     public $timestamps = true;
     protected $fillable = [
@@ -19,7 +21,7 @@ class SalesDetailModel extends Model implements CrudInterface
         'total_item',
         'price'
     ];
-    protected $table = 'm_product_detail';
+    protected $table = 't_sales_detail';
 
     public function drop(string $id)
     {
@@ -39,7 +41,7 @@ class SalesDetailModel extends Model implements CrudInterface
             $user->where('t_sales_id', 'LIKE', '%' . $filter['t_sales_id'] . '%');
         }
  
-        $sort = $sort ?: 'id DESC';
+        $sort = $sort ?: 'm_product_category_index ASC';
         $user->orderByRaw($sort);
         $itemPerPage = ($itemPerPage > 0) ? $itemPerPage : false;
  

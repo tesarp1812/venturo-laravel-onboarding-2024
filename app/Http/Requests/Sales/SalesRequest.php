@@ -33,10 +33,10 @@ class SalesRequest extends FormRequest
         return [
             'date' => 'required|date_format:Y-m-d',
             'm_customer_id' => 'required',
-            'details.*.m_product_id' => 'required',
-            'details.*.m_product_detail_id' => 'required',
-            'details.*.total_item' => 'numeric',
-            'details.*.price' => 'numeric',
+            'product_detail.*.m_product_id' => 'required',
+            'product_detail.*.m_product_detail_id' => 'required',
+            'product_detail.*.total_item' => 'numeric',
+            'product_detail.*.price' => 'numeric',
         ];
     }
 
@@ -53,11 +53,11 @@ class SalesRequest extends FormRequest
         return [
             'date' => 'Transaction date',
             'm_customer_id' => 'Customer ID',
-            'details' => 'Sale details',
-            'details.*.m_product_id' => 'Product ID',
-            'details.*.m_product_detail_id' => 'Product Detail ID',
-            'details.*.total_item' => 'Total Items',
-            'details.*.price' => 'Price',
+            'product_detail' => 'Sale details',
+            'product_detail.*.m_product_id' => 'Product ID',
+            'product_detail.*.m_product_detail_id' => 'Product Detail ID',
+            'product_detail.*.total_item' => 'Total Items',
+            'product_detail.*.price' => 'Price',
         ];
     }
 }

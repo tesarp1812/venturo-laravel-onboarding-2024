@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\Sales\SalesHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Sales\SalesRequest;
+use App\Http\Resources\Sales\SalesCollection;
 use App\Http\Resources\Sales\SalesResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,17 +26,19 @@ class SalesController extends Controller
     public function index(Request $request)
     {
         $filter = [
-            'name' => $request->name ?? ''
+            'name' => $request->name ?? '',
+            'm_customer_id' => $request->m_customer_id ?? '',
+            'date' => $request->date ?? '',
         ];
         $sales = $this->sales->getAll($filter, $request->per_page ?? 25, $request->sort ?? '');
         //dd($sales);
+        // return response()->success($sales['data']);
         return response()->success(new SalesCollection($sales['data']));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(SalesRequest $request)
     public function store(SalesRequest $request)
     {
         // dd($request->all());
@@ -44,13 +47,9 @@ class SalesController extends Controller
             return response()->failed($request->validator->errors());
         }
 
-        $payload = $request->only([
-            "m_customer_id",
-            "date",
-            'details',
-        ]);
-        // dd($payload);
+        $payload = $request->only(["m_customer_id", "date", 'product_detail']);
         $sales = $this->sales->create($payload);
+        // dd($payload['product_detail']);
         
         if(!$sales['status']){
             return response()->failed($sales['error']);

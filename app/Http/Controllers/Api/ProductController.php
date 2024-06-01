@@ -61,7 +61,7 @@ class ProductController extends Controller
 
         $payload['m_product_category_id'] = $payload['product_category_id'];
         $product = $this->product->create($payload);
-        // dd($payload);
+        // dd($payload['details']);
 
         if (!$product['status']) {
             return response()->failed($product['error']);

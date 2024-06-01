@@ -54,4 +54,24 @@ class SalesModel extends Model implements CrudInterface
     {
         return $this->create($payload);
     }
+
+
+    public function getSalesByCategory($startDate, $endDate, $category = '')
+    {
+        $sales = $this->query()->with([
+            'detail.product' => function ($query) use ($category) {
+                if (!empty($category)) {
+                    $query->where('m_product_category_id', $category);
+                }
+            },
+            'detail',
+            'detail.product.category'
+        ]);
+
+        if (!empty($startDate) && !empty($endDate)) {
+            $sales->whereRaw('date >= "' . $startDate . ' 00:00:01" and date <= "' . $endDate . ' 23:59:59"');
+        }
+
+        return $sales->orderByDesc('date')->limit(2)->get();
+    }
 }
