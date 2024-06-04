@@ -20,6 +20,16 @@ class SalesModel extends Model implements CrudInterface
     ];
     protected $table = 't_sales';
 
+    public function customer()
+    {
+        return $this->hasOne(CustomerModel::class, 'id', 'm_customer_id');
+    }
+    // Define relationship with SaleDetail model
+    public function details()
+    {
+        return $this->hasMany(SalesDetailModel::class, 't_sales_id');
+    }
+
     public function drop(string $id)
     {
         return $this->find($id)->delete();
@@ -59,19 +69,37 @@ class SalesModel extends Model implements CrudInterface
     public function getSalesByCategory($startDate, $endDate, $category = '')
     {
         $sales = $this->query()->with([
-            'detail.product' => function ($query) use ($category) {
+            'details.product' => function ($query) use ($category) {
                 if (!empty($category)) {
                     $query->where('m_product_category_id', $category);
                 }
             },
-            'detail',
-            'detail.product.category'
+            'details',
+            'details.product.category',
         ]);
 
         if (!empty($startDate) && !empty($endDate)) {
             $sales->whereRaw('date >= "' . $startDate . ' 00:00:01" and date <= "' . $endDate . ' 23:59:59"');
         }
+        // dd($sales);
 
-        return $sales->orderByDesc('date')->limit(2)->get();
+        return $sales->orderByDesc('date')->get();
+        // return $sales->orderByDesc('date')->limit(2)->get();
+    }
+
+    public function get($startDate, $endDate, $categoryId = '')
+    {
+        $this->startDate = $startDate;
+        $this->endDate   = $endDate;
+
+        $sales = $this->sales->getSalesByCategory($startDate, $endDate, $categoryId);
+
+        return [
+            'status'     => true,
+            'data'       => $this->reformatReport($sales, $startDate, $endDate),
+            'dates'          => array_values($this->dates),
+            'total_per_date' => array_values($this->totalPerDate),
+            'grand_total'    => $this->total
+        ];
     }
 }

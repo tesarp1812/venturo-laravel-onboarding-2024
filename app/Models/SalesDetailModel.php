@@ -23,6 +23,16 @@ class SalesDetailModel extends Model implements CrudInterface
     ];
     protected $table = 't_sales_detail';
 
+    public function product()
+    {
+        return $this->hasOne(ProductModel::class, 'id', 'm_product_id');
+    }
+
+    public function productDetails()
+    {
+        return $this->hasOne(ProductDetailModel::class, 'id', 'm_product_detail_id');
+    }
+
     public function drop(string $id)
     {
         return $this->find($id)->delete();
@@ -36,15 +46,19 @@ class SalesDetailModel extends Model implements CrudInterface
     public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
     {
         $user = $this->query();
- 
-        if (!empty($filter['t_sales_id'])) {
-            $user->where('t_sales_id', 'LIKE', '%' . $filter['t_sales_id'] . '%');
+
+        if (!empty($filter['type'])) {
+            $user->where('type', 'LIKE', '%' . $filter['type'] . '%');
         }
- 
-        $sort = $sort ?: 'm_product_category_index ASC';
+
+        if (!empty($filter['m_product_id'])) {
+            $user->where('m_product_id', 'LIKE', '%' . $filter['m_product_id'] . '%');
+        }
+
+        $sort = $sort ?: 'm_product_category.index ASC';
         $user->orderByRaw($sort);
         $itemPerPage = ($itemPerPage > 0) ? $itemPerPage : false;
- 
+
         return $user->paginate($itemPerPage)->appends('sort', $sort);
     }
  

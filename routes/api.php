@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\CustomerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ProductCategoryController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ReportSalesController;
 use App\Http\Controllers\Api\SalesController;
 
 /*
@@ -67,9 +68,12 @@ Route::prefix('v1')->group(function () {
     Route::get('/sales', [SalesController::class, 'index']);
     Route::get('/sales/{id}', [SalesController::class, 'show']);
     Route::post('/sales', [SalesController::class, 'store']);
+    Route::get('/sale', [SalesController::class, 'viewSales']);
     // Route::put('/sales', [SalesController::class, 'update']);
     // Route::delete('/sales/{id}', [SalesController::class, 'destroy']);
 });
+
+Route::get('/report/sales-menu', [ReportSalesController::class, 'viewSalesCategories']);
 
 
 Route::get('/', function () {
