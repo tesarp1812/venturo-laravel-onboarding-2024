@@ -24,7 +24,7 @@ class SalesModel extends Model implements CrudInterface
     {
         return $this->hasOne(CustomerModel::class, 'id', 'm_customer_id');
     }
-    // Define relationship with SaleDetail model
+    
     public function details()
     {
         return $this->hasMany(SalesDetailModel::class, 't_sales_id');
@@ -76,6 +76,52 @@ class SalesModel extends Model implements CrudInterface
             },
             'details',
             'details.product.category',
+        ]);
+
+        if (!empty($startDate) && !empty($endDate)) {
+            $sales->whereRaw('date >= "' . $startDate . ' 00:00:01" and date <= "' . $endDate . ' 23:59:59"');
+        }
+        // dd($sales);
+
+        return $sales->orderByDesc('date')->get();
+        // return $sales->orderByDesc('date')->limit(2)->get();
+    }
+
+
+    public function getSales($startDate, $endDate, $category = '')
+    {
+        $sales = $this->query()->with([
+            'details.product' => function ($query) use ($category) {
+                if (!empty($category)) {
+                    $query->where('m_product_category_id', $category);
+                }
+            },
+            'customer',
+            'details',
+            'details.product.category',
+            'details.productDetails',
+        ]);
+
+        if (!empty($startDate) && !empty($endDate)) {
+            $sales->whereRaw('date >= "' . $startDate . ' 00:00:01" and date <= "' . $endDate . ' 23:59:59"');
+        }
+        // dd($sales);
+
+        return $sales->orderByDesc('date')->get();
+        // return $sales->orderByDesc('date')->limit(2)->get();
+    }
+
+    public function getSalesByCustomers($startDate, $endDate, $category = '')
+    {
+        $sales = $this->query()->with([
+            'details.product' => function ($query) use ($category) {
+                if (!empty($category)) {
+                    $query->where('m_product_category_id', $category);
+                }
+            },
+            'details',
+            'details.product.category',
+            'customer'
         ]);
 
         if (!empty($startDate) && !empty($endDate)) {

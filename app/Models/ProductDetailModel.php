@@ -21,6 +21,11 @@ class ProductDetailModel extends Model implements CrudInterface
         'm_product_id'
     ];
     protected $table = 'm_product_detail';
+
+    public function detailProduct()
+    {
+        return $this->hasOne(ProductDetailModel::class, 'id', 'm_product_detail_id');
+    }
  
     public function drop(string $id)
     {

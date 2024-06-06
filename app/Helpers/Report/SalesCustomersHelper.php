@@ -8,7 +8,7 @@ use DateInterval;
 use DatePeriod;
 use DateTime;
 
-class SalesCatagoryHelper extends Venturo
+class SalesCustomersHelper extends Venturo
 {
     private $sales;
     private $startDate;
@@ -59,7 +59,7 @@ class SalesCatagoryHelper extends Venturo
         $list        = $list->toArray();
         $periods     = $this->getPeriode();
         $salesDetail = [];
-        // dd($list);
+        dd($list);
         foreach ($list as $sales) {
             // dd($sales['id']);
             foreach ($sales['details'] as $detail) {
@@ -143,7 +143,7 @@ class SalesCatagoryHelper extends Venturo
         $this->startDate = $startDate;
         $this->endDate   = $endDate;
 
-        $sales = $this->sales->getSalesByCategory($startDate, $endDate, $categoryId);
+        $sales = $this->sales->getSalesByCustomers($startDate, $endDate, $categoryId);
 
         return [
             'status'     => true,

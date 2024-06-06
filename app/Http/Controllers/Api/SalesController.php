@@ -95,6 +95,8 @@ class SalesController extends Controller
         // return response()->json(['message' => 'Hello, World!']);
     }
 
+    
+
     /**
      * Update the specified resource in storage.
      */
