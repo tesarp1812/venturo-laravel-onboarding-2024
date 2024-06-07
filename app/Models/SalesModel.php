@@ -121,6 +121,7 @@ class SalesModel extends Model implements CrudInterface
             },
             'details',
             'details.product.category',
+            'details.productDetails',
             'customer'
         ]);
 

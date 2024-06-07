@@ -59,83 +59,72 @@ class SalesCustomersHelper extends Venturo
         $list        = $list->toArray();
         $periods     = $this->getPeriode();
         $salesDetail = [];
-        dd($list);
+        // dd($list);
         foreach ($list as $sales) {
-            // dd($sales['id']);
+            $customerId = $sales['m_customer_id'];
+            $customerName = $sales['customer']['name'];
+            $customerTotal = 0;
+            $transactions = [];
+    
             foreach ($sales['details'] as $detail) {
                 // Skip if relation to product is not found
                 if (empty($detail['product'])) {
                     continue;
                 }
-
-                $date                   = date('Y-m-d', strtotime($sales['date']));
-                $categoryId             = $detail['product']['m_product_category_id'];
-                $categoryName           = $detail['product']['category']['name'];
-                $productId              = $detail['product']['id'];
-                $productName            = $detail['product']['name'];
-                $totalSales             = $detail['price'] * $detail['total_item'];
-                $listTransactions       = $salesDetail[$categoryId]['products'][$productId]['transactions'] ?? $periods;
-                $subTotal               = $salesDetail[$categoryId]['products'][$productId]['transactions'][$date]['total_sales'] ?? 0;
-                $totalPerProduct        = $salesDetail[$categoryId]['products'][$productId]['transactions_total'] ?? 0;
-                $totalPerCategory       = $salesDetail[$categoryId]['category_total'] ?? 0;
-
-                $salesDetail[$categoryId] = [
-                    'category_id'    => $categoryId,
-                    'category_name'  => $categoryName,
-                    'category_total' => $totalPerCategory + $totalSales,
-                    'products'       => $salesDetail[$categoryId]['products'] ?? [],
+                $dateTransactions = $sales['date'];
+                $totalDetailProductPrice = ($detail['product']['price'] + $detail['product_details']['price']) * $detail['total_item'];
+    
+                // Accumulate total sales for the customer
+                $customerTotal += $totalDetailProductPrice;
+    
+                $transactions[] = [
+                    'date' => $dateTransactions,
+                    'total_sales' => $totalDetailProductPrice
                 ];
-
-                $salesDetail[$categoryId]['products'][$productId] = [
-                    'product_id'         => $productId,
-                    'product_name'       => $productName,
-                    'transactions'       => $listTransactions,
-                    'transactions_total' => $totalPerProduct + $totalSales
-                ];
-
-                $salesDetail[$categoryId]['products'][$productId]['transactions'][$date] = [
-                    'date_transaction' => $date,
-                    'total_sales'      => $totalSales + $subTotal
-                ];
-
-                $this->totalPerDate[$date] = ($this->totalPerDate[$date] ?? 0) + $totalSales;
-                $this->total               = ($this->total ?? 0) + $totalSales;
             }
+    
+            // Aggregate total sales for each customer
+            $salesDetail[$customerId] = [
+                'customer_id' => $customerId,
+                'customer_name' => $customerName,
+                'total' => $customerTotal,
+                'transaction' => $transactions
+            ];
         }
-
+    
+        // return $salesDetail;
         return $this->convertNumericKey($salesDetail);
     }
 
     private function convertNumericKey($salesDetail)
-    {
-        $indexSales = 0;
-
-        foreach ($salesDetail as $sales) {
-            $list[$indexSales] = [
-                'category_id'    => $sales['category_id'],
-                'category_name'  => $sales['category_name'],
-                'category_total' => $sales['category_total']
+{
+    $numericSalesDetail = [];
+    $indexSales = 0;
+    
+    foreach ($salesDetail as $sales) {
+        $numericSalesDetail[$indexSales] = [
+            'category_id' => $sales['customer_id'],
+            'category_name' => $sales['customer_name'],
+            'category_total' => $sales['total'],
+            'products' => []
+        ];
+        
+        $indexProducts = 0;
+        foreach ($sales['transaction'] as $transaction) {
+            $numericSalesDetail[$indexSales]['products'][$indexProducts] = [
+                'product_id' => '',
+                'product_name' => '',
+                'transactions' => array_values($transaction),
+                'transactions_total' => $transaction['total_sales']
             ];
-
-            $indexProducts = 0;
-            foreach ($sales['products'] as $product) {
-                $list[$indexSales]['products'][$indexProducts] = [
-                    'product_id'         => $product['product_id'],
-                    'product_name'       => $product['product_name'],
-                    'transactions'       => array_values($product['transactions']),
-                    'transactions_total' => $product['transactions_total']
-                ];
-
-                $indexProducts++;
-            }
-
-            $indexSales++;
+            $indexProducts++;
         }
-
-        unset($salesDetail);
-
-        return $list ?? [];
+        
+        $indexSales++;
     }
+    
+    return $numericSalesDetail;
+}
 
 
     public function get($startDate, $endDate, $categoryId = '')
