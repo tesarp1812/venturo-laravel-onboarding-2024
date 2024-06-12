@@ -26,6 +26,7 @@ class CreateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            // 'user_roles_id' => 'required',
             'name' => 'required|max:100',
             'photo' => 'nullable|file|image',
             'email' => 'required|email|unique:m_user',
@@ -78,7 +79,7 @@ class CreateRequest extends FormRequest
             return response()->failed($request->validator->errors());
         }
 
-        $payload = $request->only(['email', 'name', 'password', 'photo']);
+        $payload = $request->only(['email', 'name', 'password', 'photo','user_roles_id']);
         $user = $this->user->create($payload);
 
         if (!$user['status']) {

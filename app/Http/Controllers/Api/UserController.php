@@ -55,7 +55,7 @@ class UserController extends Controller
                 return response()->failed($request->validator->errors());
             }
 
-            $payload = $request->only(['email', 'name', 'password', 'photo']);
+            $payload = $request->only(['user_roles_id','email', 'name', 'password', 'photo']);
             $user = $this->user->create($payload);
 
             if (!$user['status']) {

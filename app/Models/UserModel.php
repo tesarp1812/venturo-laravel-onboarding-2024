@@ -18,13 +18,14 @@ class UserModel extends Model implements CrudInterface
         'name',
         'email',
         'password',
+        'user_roles_id',
         'photo',
         'phone_number',
     ];
     public $timestamp = true;
-    protected $attributes = [
-        'user_roles_id' => 1, // memberi nilai default = 1 pada kolom user_roles_id
-    ];
+    // protected $attributes = [
+    //     'user_roles_id' => 1, // memberi nilai default = 1 pada kolom user_roles_id
+    // ];
 
     public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
     {
