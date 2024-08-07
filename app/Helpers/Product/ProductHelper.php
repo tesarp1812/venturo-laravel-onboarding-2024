@@ -64,7 +64,7 @@ class ProductHelper extends Venturo
     }
 
 
-    public function delete(int $productId)
+    public function delete( $productId)
     {
         try {
             $this->beginTransaction();

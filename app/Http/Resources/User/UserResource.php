@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'phone_number' => $this->phone_number,
             'photo_url' => !empty($this->photo) ? Storage::disk('public')->url($this->photo) : null,
             'updated_security' => $this->updated_security
         ];

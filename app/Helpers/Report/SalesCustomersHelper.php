@@ -59,7 +59,7 @@ class SalesCustomersHelper extends Venturo
         $list        = $list->toArray();
         $periods     = $this->getPeriode();
         $salesDetail = [];
-        // dd($list);
+        dd($list);
         foreach ($list as $sales) {
             $customerId = $sales['m_customer_id'];
             $customerName = $sales['customer']['name'];

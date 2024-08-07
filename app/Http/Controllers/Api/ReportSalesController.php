@@ -43,7 +43,8 @@ class ReportSalesController extends Controller
         $isExportExcel = $request->is_export_excel ?? null;
         
         $sales = $this->salesCustomers->get($startDate, $endDate, $categoryId);
-        // dd($sales);getSalesByCategory
+        dd($sales);
+        // return response()->success($sales['data']);
 
 
         return response()->success($sales['data'], '', [

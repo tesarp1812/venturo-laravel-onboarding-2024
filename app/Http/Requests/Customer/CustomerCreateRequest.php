@@ -38,6 +38,18 @@ class CustomerCreateRequest extends FormRequest
     }
 
     /**
+     * Get the custom attributes for validator errors.
+     *
+     * @return array<string, string>
+     */
+    public function attributes()
+    {
+        return [
+            'password' => 'Kolom Password',
+        ];
+    }
+
+    /**
      * inisialisasi key "photo" dengan value base64 sebagai "FILE"
      *
      * @return array

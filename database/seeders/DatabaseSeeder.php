@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         $faker = Faker::create('id_ID');
 
         //faker user kepala
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $userId = Str::uuid(); // Membuat UUID baru
         
             DB::table('m_user')->insert([

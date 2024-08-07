@@ -55,7 +55,7 @@ class UserController extends Controller
                 return response()->failed($request->validator->errors());
             }
 
-            $payload = $request->only(['user_roles_id','email', 'name', 'password', 'photo']);
+            $payload = $request->only(['user_roles_id','email', 'name', 'password','phone_number', 'photo']);
             $user = $this->user->create($payload);
 
             if (!$user['status']) {
@@ -111,7 +111,7 @@ class UserController extends Controller
         $tempFilePath = public_path('uploads/foto-user/' . $fileName);
         file_put_contents($tempFilePath, $decodedImage);
 
-        $payload = $request->only(['email', 'name', 'password', 'id', 'photo']);
+        $payload = $request->only(['email', 'name', 'password', 'id','phone_number', 'photo']);
         $payload['photo'] = $fileName;
         $user = $this->user->update($payload, $payload['id']);
 

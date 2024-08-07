@@ -86,8 +86,8 @@ class CustomerController extends Controller
         }
 
 
-        return response()->success($customer['data']);
-        //    return response()->success(new CustomerResource($customer['data']));
+        // return response()->success($customer['data']);
+           return response()->success(new CustomerResource($customer['data']));
     }
 
     /**

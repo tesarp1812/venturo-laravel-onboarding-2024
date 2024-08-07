@@ -60,7 +60,7 @@ class SalesCatagoryHelper extends Venturo
         $list        = $list->toArray();
         $periods     = $this->getPeriode();
         $salesDetail = [];
-        // dd($list);
+        dd($list);
 
         foreach ($list as $sales) {
             $transactionId = $sales['id'];

@@ -34,7 +34,7 @@ class SalesController extends Controller
             'date' => $request->date ?? '',
         ];
         $sales = $this->sales->getAll($filter, $request->per_page ?? 25, $request->sort ?? '');
-        //dd($sales);
+        // dd($sales);
         // return response()->success($sales['data']);
         return response()->success(new SalesCollection($sales['data']));
     }
@@ -84,7 +84,7 @@ class SalesController extends Controller
         $isExportExcel = $request->is_export_excel ?? null;
 
         $sales = $this->salesCategory->get($startDate, $endDate, $categoryId);
-        // dd($sales);
+        dd($sales);
 
 
         return response()->success($sales['data'], '', [
@@ -92,7 +92,7 @@ class SalesController extends Controller
             'total_per_date' => $sales['total_per_date'] ?? [],
             'grand_total'    => $sales['grand_total'] ?? 0
         ]);
-        // return response()->json(['message' => 'Hello, World!']);
+        return response()->json(['message' => 'Hello, World!']);
     }
 
     
