@@ -64,7 +64,7 @@ class ProductHelper extends Venturo
     }
 
 
-    public function delete( $productId)
+    public function delete($productId)
     {
         try {
             $this->beginTransaction();
@@ -152,18 +152,18 @@ class ProductHelper extends Venturo
             return false;
         }
 
-
         foreach ($details as $val) {
-            $this->productDetail->delete($val['id']);
+            $this->productDetail->drop($val['id']);
         }
     }
+
 
     private function insertUpdateDetail(array $details, string $productId)
     {
         if (empty($details)) {
             return false;
         }
-
+        // dd($details);
         foreach ($details as $val) {
             // Insert
             if (isset($val['is_added']) && $val['is_added']) {

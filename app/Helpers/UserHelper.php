@@ -30,10 +30,9 @@ class UserHelper extends Venturo
      *
      * @return object
      */
-    public function getAll(array $filter, int $itemPerPage = 0, string $sort = ''): array
+    public function getAll(array $filter, int $itemPerPage = 0, string $sort = '')
     {
         $users = $this->userModel->getAll($filter, $itemPerPage, $sort);
-
         return [
             'status' => true,
             'data' => $users

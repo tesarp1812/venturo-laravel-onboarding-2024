@@ -45,7 +45,6 @@ class ProductModel extends Model implements CrudInterface
     {
         return $this->hasMany(ProductDetailModel::class, 'm_product_id', 'id');
     }
-    
 
     public function drop(string $id)
     {
