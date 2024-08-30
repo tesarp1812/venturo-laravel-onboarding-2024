@@ -16,6 +16,7 @@ class SalesCustomersHelper extends Venturo
     private $total;
     private $totalPerDate = [];
     private $dates = [];
+
     public function __construct()
     {
         $this->sales = new SalesModel();
@@ -30,8 +31,9 @@ class SalesCustomersHelper extends Venturo
         $interval = DateInterval::createFromDateString('1 day');
         $period   = new DatePeriod($begin, $interval, $end);
 
+        $dates = []; // Inisialisasi variabel $dates
         foreach ($period as $dt) {
-            $date         = $dt->format('Y-m-d');
+            $date = $dt->format('Y-m-d');
             $dates[$date] = [
                 'date_transaction' => $date,
                 'total_sales'      => 0,
@@ -41,7 +43,7 @@ class SalesCustomersHelper extends Venturo
             $this->setSelectedDate($date);
         }
 
-        return $dates ?? [];
+        return $dates ?? []; // Mengembalikan array kosong jika $dates adalah null
     }
 
     private function setDefaultTotal(string $date)
@@ -56,34 +58,36 @@ class SalesCustomersHelper extends Venturo
 
     private function reformatReport($list)
     {
-        $list        = $list->toArray();
-        $periods     = $this->getPeriode();
+        $list = $list->toArray();
+        $periods = $this->getPeriode();
         $salesDetail = [];
-        dd($list);
+
+        // Pastikan $list adalah array
+        if (!is_array($list)) {
+            $list = []; // Atau tangani sesuai kebutuhan
+        }
+
         foreach ($list as $sales) {
-            $customerId = $sales['m_customer_id'];
-            $customerName = $sales['customer']['name'];
+            $customerId = $sales['m_customer_id'] ?? null;
+            $customerName = $sales['customer']['name'] ?? 'Unknown';
             $customerTotal = 0;
             $transactions = [];
-    
+
             foreach ($sales['details'] as $detail) {
-                // Skip if relation to product is not found
                 if (empty($detail['product'])) {
                     continue;
                 }
-                $dateTransactions = $sales['date'];
-                $totalDetailProductPrice = ($detail['product']['price'] + $detail['product_details']['price']) * $detail['total_item'];
-    
-                // Accumulate total sales for the customer
+                $dateTransactions = $sales['date'] ?? 'Unknown';
+                $totalDetailProductPrice = ($detail['product']['price'] ?? 0 + $detail['product_details']['price'] ?? 0) * ($detail['total_item'] ?? 0);
+
                 $customerTotal += $totalDetailProductPrice;
-    
+
                 $transactions[] = [
                     'date' => $dateTransactions,
                     'total_sales' => $totalDetailProductPrice
                 ];
             }
-    
-            // Aggregate total sales for each customer
+
             $salesDetail[$customerId] = [
                 'customer_id' => $customerId,
                 'customer_name' => $customerName,
@@ -91,41 +95,54 @@ class SalesCustomersHelper extends Venturo
                 'transaction' => $transactions
             ];
         }
-    
-        // return $salesDetail;
+
         return $this->convertNumericKey($salesDetail);
     }
 
     private function convertNumericKey($salesDetail)
-{
-    $numericSalesDetail = [];
-    $indexSales = 0;
-    
-    foreach ($salesDetail as $sales) {
-        $numericSalesDetail[$indexSales] = [
-            'category_id' => $sales['customer_id'],
-            'category_name' => $sales['customer_name'],
-            'category_total' => $sales['total'],
-            'products' => []
-        ];
-        
-        $indexProducts = 0;
-        foreach ($sales['transaction'] as $transaction) {
-            $numericSalesDetail[$indexSales]['products'][$indexProducts] = [
-                'product_id' => '',
-                'product_name' => '',
-                'transactions' => array_values($transaction),
-                'transactions_total' => $transaction['total_sales']
-            ];
-            $indexProducts++;
+    {
+        // Pastikan $salesDetail adalah array
+        if (!is_array($salesDetail)) {
+            $salesDetail = []; // Atau tangani sesuai kebutuhan
         }
-        
-        $indexSales++;
-    }
-    
-    return $numericSalesDetail;
-}
 
+        $numericSalesDetail = [];
+        $indexSales = 0;
+
+        foreach ($salesDetail as $sales) {
+            // Tambahkan pemeriksaan untuk memastikan semua elemen ada
+            if (!isset($sales['customer_id']) || !isset($sales['customer_name']) || !isset($sales['total']) || !isset($sales['transaction'])) {
+                continue; // Lewati elemen yang tidak lengkap
+            }
+
+            $numericSalesDetail[$indexSales] = [
+                'category_id' => $sales['customer_id'],
+                'category_name' => $sales['customer_name'],
+                'category_total' => $sales['total'],
+                'products' => []
+            ];
+
+            $indexProducts = 0;
+            foreach ($sales['transaction'] as $transaction) {
+                // Tambahkan pemeriksaan untuk memastikan transaksi memiliki total_sales
+                if (!isset($transaction['total_sales'])) {
+                    continue; // Lewati transaksi yang tidak lengkap
+                }
+
+                $numericSalesDetail[$indexSales]['products'][$indexProducts] = [
+                    'product_id' => '',
+                    'product_name' => '',
+                    'transactions' => array_values($transaction),
+                    'transactions_total' => $transaction['total_sales']
+                ];
+                $indexProducts++;
+            }
+
+            $indexSales++;
+        }
+
+        return $numericSalesDetail;
+    }
 
     public function get($startDate, $endDate, $categoryId = '')
     {
@@ -136,8 +153,8 @@ class SalesCustomersHelper extends Venturo
 
         return [
             'status'     => true,
-            'data'       => $this->reformatReport($sales, $startDate, $endDate),
-            'dates'          => array_values($this->dates),
+            'data'       => $this->reformatReport($sales),
+            'dates'      => array_values($this->dates),
             'total_per_date' => array_values($this->totalPerDate),
             'grand_total'    => $this->total
         ];

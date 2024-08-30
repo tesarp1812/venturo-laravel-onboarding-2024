@@ -73,10 +73,11 @@ Route::prefix('v1')->group(function () {
     // Route::delete('/sales/{id}', [SalesController::class, 'destroy']);
 });
 
-Route::get('/report/sales-menu', [ReportSalesController::class, 'viewSalesCategories']);
-// Route::get('/v1/sale-customer', [ReportSalesController::class, 'viewSalesCustomers']);
+
+// Route::get('/sale-customer', [ReportSalesController::class, 'viewSalesCustomers']);
 Route::prefix('v1')->group(function () {
-    Route::get('/sale-customer', [ReportSalesController::class, 'viewSalesCustomers']);
+    Route::get('/report/sale-customer', [ReportSalesController::class, 'viewSalesCustomers']);
+    Route::get('/report/sales-menu', [ReportSalesController::class, 'viewSalesCategories']);
 });
 
 Route::get('/', function () {

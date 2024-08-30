@@ -43,7 +43,7 @@ class ReportSalesController extends Controller
         $isExportExcel = $request->is_export_excel ?? null;
         
         $sales = $this->salesCustomers->get($startDate, $endDate, $categoryId);
-        dd($sales);
+        // dd($sales);
         // return response()->success($sales['data']);
 
 
@@ -52,6 +52,5 @@ class ReportSalesController extends Controller
             'total_per_date' => $sales['total_per_date'] ?? [],
             'grand_total'    => $sales['grand_total'] ?? 0
         ]);
-        // return response()->json(['message' => 'Hello, World!']);
     }
 }
